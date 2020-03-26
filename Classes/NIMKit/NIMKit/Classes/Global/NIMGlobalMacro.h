@@ -12,6 +12,8 @@
 #define NIMKit_IOS11            ([[[UIDevice currentDevice] systemVersion] doubleValue] >= 11.0)
 #define NIMKit_UIScreenWidth   [UIScreen mainScreen].bounds.size.width
 #define NIMKit_UIScreenHeight  [UIScreen mainScreen].bounds.size.height
+#define kRGBA(r,g,b,a) [UIColor colorWithRed:r/255.0f green:g/255.0f blue:b/255.0f alpha:a]
+#define kRGB(r,g,b) kRGBA(r,g,b,1.0f)
 
 
 #define NIMKit_SuppressPerformSelectorLeakWarning(Stuff) \

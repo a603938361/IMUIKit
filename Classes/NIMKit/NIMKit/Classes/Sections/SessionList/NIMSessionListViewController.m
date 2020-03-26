@@ -14,8 +14,8 @@
 #import "NIMMessageUtil.h"
 #import "NIMKitUtil.h"
 #import "NIMKit.h"
-#import "TWTool.h"
 #import "NTESSessionUtil.h"
+#import "NIMGlobalMacro.h"
 
 @interface NIMSessionListViewController ()
 

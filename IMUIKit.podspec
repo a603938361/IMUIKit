@@ -85,7 +85,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.source_files  = "Classes", "Classes/**/*.{h,m}"
-  # spec.exclude_files = "Classes/Exclude"
+  # spec.exclude_files = "Classes"
 
   # spec.public_header_files = "Classes/**/*.h"
 
@@ -99,7 +99,7 @@ Pod::Spec.new do |spec|
   #
 
   # spec.resource  = "icon.png"
-  # spec.resources = "Resources/*.png"
+  spec.resources = "Classes/**/*.bundle"
 
   # spec.preserve_paths = "FilesToSave", "MoreFilesToSave"
 
@@ -126,6 +126,13 @@ Pod::Spec.new do |spec|
   spec.requires_arc = true
 
   # spec.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
-  # spec.dependency "JSONKit", "~> 1.4"
 
+  #网易IM
+    spec.dependency 'NIMSDK','~> 7.2.0'
+    spec.dependency 'Reachability', '~> 3.2.0'
+    spec.dependency 'CocoaLumberjack', '~> 3.2.1'
+    spec.dependency 'SDWebImageFLPlugin', '~> 0.3.0'
+    spec.dependency 'SVProgressHUD', '~> 2.1.2'
+    spec.dependency 'M80AttributedLabel'
+    spec.dependency 'Toast'
 end
