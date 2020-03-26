@@ -567,9 +567,9 @@ static NSString *const NTESRecentSessionTopMark = @"NTESRecentSessionTopMark";
     return message;
 }
 +(NSString *)yunxinLoginAccout{
-//    TWMinePersonalModel *model =[TWMinePersonalModel mj_objectWithKeyValues:[[NSUserDefaults standardUserDefaults]objectForKey:kPersonalInfo]];
-//    NSString *accid = model.accid;
-    return @"1333";
+    TWMinePersonalModel *model =[TWMinePersonalModel mj_objectWithKeyValues:[[NSUserDefaults standardUserDefaults]objectForKey:kPersonalInfo]];
+    NSString *accid = model.accid;
+    return accid;
 }
 
 

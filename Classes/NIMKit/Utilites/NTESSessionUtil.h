@@ -60,6 +60,6 @@ typedef NS_ENUM(NSInteger, NTESRecentSessionMarkType){
 
 
 //返回登陆账号
-//+(NSString *)yunxinLoginAccout;
++(NSString *)yunxinLoginAccout;
 
 @end
