@@ -10,7 +10,6 @@
 #import <NIMSDK/NIMSDK.h>
 #import "NIMKitDependency.h"
 
-
 @interface NIMAvatarImageView : UIControl
 @property (nonatomic,strong)    UIImage *image;
 @property (nonatomic,assign)    CGFloat cornerRadius;

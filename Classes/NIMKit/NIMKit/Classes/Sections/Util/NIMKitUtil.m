@@ -76,14 +76,14 @@
 //        result = showDetail? [[NSString alloc] initWithFormat:@"前天%@ %zd:%02d",result,hour,(int)msgDateComponents.minute] : @"前天";
 //    }
 //    else if([nowDate timeIntervalSinceDate:msgDate] < 7 * OnedayTimeIntervalValue)//一周内
-////    {
-////        NSString *weekDay = [NIMKitUtil weekdayStr:msgDateComponents.weekday];
-////        result = showDetail? [weekDay stringByAppendingFormat:@"%@ %zd:%02d",result,hour,(int)msgDateComponents.minute] : weekDay;
-////    }
+//    {
+//        NSString *weekDay = [NIMKitUtil weekdayStr:msgDateComponents.weekday];
+//        result = showDetail? [weekDay stringByAppendingFormat:@"%@ %zd:%02d",result,hour,(int)msgDateComponents.minute] : weekDay;
+//    }
     else//显示日期
     {
 //        NSString *day = [NSString stringWithFormat:@"%zd-%zd-%zd", msgDateComponents.year, msgDateComponents.month, msgDateComponents.day];
-          NSString *day = [NSString stringWithFormat:@"%zd-%zd", msgDateComponents.month, msgDateComponents.day];
+            NSString *day = [NSString stringWithFormat:@"%zd-%zd", msgDateComponents.month, msgDateComponents.day];
         result = showDetail? [day stringByAppendingFormat:@"%@ %zd:%02d",result,hour,(int)msgDateComponents.minute]:day;
     }
     return result;

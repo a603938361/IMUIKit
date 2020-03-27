@@ -10,8 +10,6 @@
 #import <NIMSDK/NIMSDK.h>
 #import "NIMGlobalMacro.h"
 
-
-
 @protocol NIMSessionContentConfig <NSObject>
 @required
 

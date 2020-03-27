@@ -10,6 +10,7 @@
 #import <NIMSDK/NIMSDK.h>
 #import "TWNewMessageAttachMent.h"
 
+
 @implementation NIMMessageUtil
 
 + (NSString *)messageContent:(NIMMessage*)message {
@@ -40,14 +41,14 @@
             text = message.text;
             break;
         case NIMMessageTypeCustom:{
-            NIMCustomObject *object = message.messageObject;
-            TWNewMessageAttachMent *attachment = object.attachment;
-            text = attachment.messageDic[@"estateAreaName"];
+                NIMCustomObject *object = message.messageObject;
+                TWNewMessageAttachMent *attachment = object.attachment;
+                text = attachment.messageDic[@"estateAreaName"];
 
-//            TWNewMessageAttachMent =objc
-        }
+            //            TWNewMessageAttachMent =objc
+                    }
 
-        break;
+                    break;
         default:
             text = @"[未知消息]";
     }

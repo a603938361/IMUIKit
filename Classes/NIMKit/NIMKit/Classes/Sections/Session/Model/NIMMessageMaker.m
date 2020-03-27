@@ -11,7 +11,6 @@
 #import "NIMKitLocationPoint.h"
 #import "NIMKit.h"
 #import "NIMInputAtCache.h"
-#import "NTESSessionUtil.h"
 
 @implementation NIMMessageMaker
 
@@ -19,7 +18,7 @@
 {
     NIMMessage *textMessage = [[NIMMessage alloc] init];
     textMessage.text        = text;
-//    textMessage.apnsPayload = @{@"sessionID":[NTESSessionUtil yunxinLoginAccout],@"sessionType":@(textMessage.messageType)};
+    textMessage.apnsPayload = @{@"sessionID":[TWUserInfoManager sharedinstace].imModel.accid,@"sessionType":@(NIMSessionTypeP2P)};
     return textMessage;
 }
 
@@ -28,8 +27,8 @@
     NIMAudioObject *audioObject = [[NIMAudioObject alloc] initWithSourcePath:filePath scene:NIMNOSSceneTypeMessage];
     NIMMessage *message = [[NIMMessage alloc] init];
     message.messageObject = audioObject;
+     message.apnsPayload = @{@"sessionID":[TWUserInfoManager sharedinstace].imModel.accid,@"sessionType":@(NIMSessionTypeP2P)};
     message.text = @"发来了一段语音";
-//    message.apnsPayload = @{@"sessionID":[NTESSessionUtil yunxinLoginAccout],@"sessionType":@(message.messageType)};
     NIMMessageSetting *setting = [[NIMMessageSetting alloc] init];
     setting.scene = NIMNOSSceneTypeMessage;
     message.setting = setting;
@@ -46,7 +45,7 @@
     NIMMessage *message = [[NIMMessage alloc] init];
     message.messageObject = videoObject;
     message.apnsContent = @"发来了一段视频";
-//    message.apnsPayload = @{@"sessionID":[NTESSessionUtil yunxinLoginAccout],@"sessionType":@(message.messageType)};
+    message.apnsPayload = @{@"sessionID":[TWUserInfoManager sharedinstace].imModel.accid,@"sessionType":@(NIMSessionTypeP2P)};
     NIMMessageSetting *setting = [[NIMMessageSetting alloc] init];
     setting.scene = NIMNOSSceneTypeMessage;
     message.setting = setting;
@@ -83,7 +82,7 @@
     NIMMessage *message     = [[NIMMessage alloc] init];
     message.messageObject   = imageObject;
     message.apnsContent = @"发来了一张图片";
-//      message.apnsPayload = @{@"sessionID":[NTESSessionUtil yunxinLoginAccout],@"sessionType":@(message.messageType)};
+    message.apnsPayload = @{@"sessionID":[TWUserInfoManager sharedinstace].imModel.accid,@"sessionType":@(NIMSessionTypeP2P)};
     NIMMessageSetting *setting = [[NIMMessageSetting alloc] init];
     setting.scene = NIMNOSSceneTypeMessage;
     message.setting = setting;
@@ -98,7 +97,7 @@
     NIMMessage *message               = [[NIMMessage alloc] init];
     message.messageObject             = locationObject;
     message.apnsContent = @"发来了一条位置信息";
-//      message.apnsPayload = @{@"sessionID":[NTESSessionUtil yunxinLoginAccout],@"sessionType":@(message.messageType)};
+   message.apnsPayload = @{@"sessionID":[TWUserInfoManager sharedinstace].imModel.accid,@"sessionType":@(NIMSessionTypeP2P)};
     return message;
 }
 

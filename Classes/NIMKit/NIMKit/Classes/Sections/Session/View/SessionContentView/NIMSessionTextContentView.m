@@ -55,6 +55,7 @@ NSString *const NIMTextMessageLabelLinkData = @"NIMTextMessageLabelLinkData";
     CGRect labelFrame = CGRectMake(contentInsets.left, contentInsets.top, contentsize.width, contentsize.height);
     self.textLabel.frame = labelFrame;
 }
+
 - (void)onTouchUpInside:(id)sender
 {
     NIMKitEvent *event = [[NIMKitEvent alloc] init];
@@ -62,7 +63,6 @@ NSString *const NIMTextMessageLabelLinkData = @"NIMTextMessageLabelLinkData";
     event.messageModel = self.model;
     [self.delegate onCatchEvent:event];
 }
-
 #pragma mark - M80AttributedLabelDelegate
 - (void)m80AttributedLabel:(M80AttributedLabel *)label
              clickedOnLink:(id)linkData{

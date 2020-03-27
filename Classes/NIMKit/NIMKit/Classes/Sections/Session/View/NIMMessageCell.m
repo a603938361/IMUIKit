@@ -195,8 +195,16 @@
     {
         if (self.model.message.session.sessionType == NIMSessionTypeP2P)
         {
-            [_readButton setTitle:@"已读" forState:UIControlStateNormal];
-            [_readButton sizeToFit];
+                    //赋值
+                          if (self.model.message.isRemoteRead) {
+                              [_readButton setTitle:@"已读" forState:UIControlStateNormal];
+                            [_readButton setTitleColor:[UIColor colorWithRed:156/255.0f green:156/255.0f blue:156/255.0f alpha:1] forState:UIControlStateNormal];
+                          }else{
+                              [_readButton setTitle:@"未读" forState:UIControlStateNormal];
+                                            [_readButton sizeToFit];
+                              [_readButton setTitleColor:[UIColor colorWithRed:40/255.0f green:137/255.0f blue:255/255.0f alpha:1] forState:UIControlStateNormal];
+                          }
+                        [_readButton sizeToFit];
         }
         else if(self.model.message.session.sessionType == NIMSessionTypeTeam)
         {
@@ -509,7 +517,6 @@
 
 - (BOOL)readLabelHidden
 {
-    //C端不做已读未读功能
 //    if (self.model.shouldShowReadLabel &&
 //        [self activityIndicatorHidden] &&
 //        [self retryButtonHidden] &&
@@ -517,7 +524,16 @@
 //    {
 //        return NO;
 //    }
-    return YES;
+//    return YES;
+    //是否展示已读未读功能，isRemoteRead已读消息，isOutgoingMsg发出去消息
+          if (self.model.message.isOutgoingMsg &&
+                [self activityIndicatorHidden] &&
+                [self retryButtonHidden] &&
+                [self unreadHidden])
+            {
+                return NO;
+            }
+            return YES;
 }
 
 

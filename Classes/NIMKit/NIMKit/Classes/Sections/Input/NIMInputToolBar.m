@@ -11,6 +11,7 @@
 #import "UIView+NIM.h"
 #import "UIImage+NIMKit.h"
 #import "NIMInputBarItemType.h"
+#import "UIButton+Extension.h"
 
 
 @interface NIMInputToolBar()<NIMGrowingTextViewDelegate>
