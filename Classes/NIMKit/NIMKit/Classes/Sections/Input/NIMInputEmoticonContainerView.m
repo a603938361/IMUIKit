@@ -290,6 +290,7 @@ NSInteger NIMCustomPageViewHeight    = 159;
 - (void)selectedEmoticon:(NIMInputEmoticon*)emoticon catalogID:(NSString*)catalogID{
     if ([self.delegate respondsToSelector:@selector(selectedEmoticon:catalog:description:)]) {
         if (emoticon.type == NIMEmoticonTypeUnicode) {
+//            [self.delegate selectedEmoticon:emoticon.emoticonID catalog:catalogID description:emoticon.unicode];
             [self.delegate selectedEmoticon:emoticon.emoticonID catalog:catalogID description:emoticon.tag];
         } else {
             [self.delegate selectedEmoticon:emoticon.emoticonID catalog:catalogID description:emoticon.tag];
@@ -307,6 +308,7 @@ NSInteger NIMCustomPageViewHeight    = 159;
 #pragma mark - InputEmoticonTabDelegate
 - (void)tabView:(NIMInputEmoticonTabView *)tabView didSelectTabIndex:(NSInteger) index{
     self.currentCatalogData = self.totalCatalogData[index];
+    
 }
 
 #pragma mark - Private

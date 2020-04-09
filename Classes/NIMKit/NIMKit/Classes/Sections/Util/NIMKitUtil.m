@@ -53,7 +53,6 @@
     NSDateComponents *msgDateComponents = [[NSCalendar currentCalendar] components:components fromDate:msgDate];
     
     NSInteger hour = msgDateComponents.hour;
-    double OnedayTimeIntervalValue = 24*60*60;  //一天的秒数
 
     result = [NIMKitUtil getPeriodOfTime:hour withMinute:msgDateComponents.minute];
     if (hour > 12)
@@ -76,14 +75,14 @@
 //        result = showDetail? [[NSString alloc] initWithFormat:@"前天%@ %zd:%02d",result,hour,(int)msgDateComponents.minute] : @"前天";
 //    }
 //    else if([nowDate timeIntervalSinceDate:msgDate] < 7 * OnedayTimeIntervalValue)//一周内
-//    {
-//        NSString *weekDay = [NIMKitUtil weekdayStr:msgDateComponents.weekday];
-//        result = showDetail? [weekDay stringByAppendingFormat:@"%@ %zd:%02d",result,hour,(int)msgDateComponents.minute] : weekDay;
-//    }
+////    {
+////        NSString *weekDay = [NIMKitUtil weekdayStr:msgDateComponents.weekday];
+////        result = showDetail? [weekDay stringByAppendingFormat:@"%@ %zd:%02d",result,hour,(int)msgDateComponents.minute] : weekDay;
+////    }
     else//显示日期
     {
 //        NSString *day = [NSString stringWithFormat:@"%zd-%zd-%zd", msgDateComponents.year, msgDateComponents.month, msgDateComponents.day];
-            NSString *day = [NSString stringWithFormat:@"%zd-%zd", msgDateComponents.month, msgDateComponents.day];
+          NSString *day = [NSString stringWithFormat:@"%zd-%zd", msgDateComponents.month, msgDateComponents.day];
         result = showDetail? [day stringByAppendingFormat:@"%@ %zd:%02d",result,hour,(int)msgDateComponents.minute]:day;
     }
     return result;
@@ -149,7 +148,7 @@
 
 
 + (NSString *)notificationMessage:(NIMMessage *)message{
-    NIMNotificationObject *object = message.messageObject;
+    NIMNotificationObject *object = (NIMNotificationObject *)message.messageObject;
     switch (object.notificationType) {
         case NIMNotificationTypeTeam:{
             return [NIMKitUtil teamNotificationFormatedMessage:message];
@@ -171,7 +170,7 @@
 
 + (NSString*)teamNotificationFormatedMessage:(NIMMessage *)message{
     NSString *formatedMessage = @"";
-    NIMNotificationObject *object = message.messageObject;
+    NIMNotificationObject *object = (NIMNotificationObject *)message.messageObject;
     if (object.notificationType == NIMNotificationTypeTeam)
     {
         NIMTeamNotificationContent *content = (NIMTeamNotificationContent*)object.content;
@@ -300,7 +299,7 @@
 
 + (NSString*)superTeamNotificationFormatedMessage:(NIMMessage *)message{
     NSString *formatedMessage = @"";
-    NIMNotificationObject *object = message.messageObject;
+    NIMNotificationObject *object = (NIMNotificationObject *)message.messageObject;
     if (object.notificationType == NIMNotificationTypeSuperTeam)
     {
         NIMSuperTeamNotificationContent *content = (NIMSuperTeamNotificationContent*)object.content;
@@ -425,7 +424,7 @@
 }
 
 + (NSString *)netcallNotificationFormatedMessage:(NIMMessage *)message{
-    NIMNotificationObject *object = message.messageObject;
+    NIMNotificationObject *object = (NIMNotificationObject *)message.messageObject;
     NIMNetCallNotificationContent *content = (NIMNetCallNotificationContent *)object.content;
     NSString *text = @"";
     NSString *currentAccount = [[NIMSDK sharedSDK].loginManager currentAccount];
@@ -457,7 +456,7 @@
 
 
 + (NSString *)chatroomNotificationFormatedMessage:(NIMMessage *)message{
-    NIMNotificationObject *object = message.messageObject;
+    NIMNotificationObject *object = (NIMNotificationObject *)message.messageObject;
     NIMChatroomNotificationContent *content = (NIMChatroomNotificationContent *)object.content;
     NSMutableArray *targetNicks = [[NSMutableArray alloc] init];
     for (NIMChatroomNotificationMember *memebr in content.targets) {
@@ -570,7 +569,7 @@
 #pragma mark - Private
 + (NSString *)teamNotificationSourceName:(NIMMessage *)message{
     NSString *source;
-    NIMNotificationObject *object = message.messageObject;
+    NIMNotificationObject *object = (NIMNotificationObject *)message.messageObject;
     NIMTeamNotificationContent *content = (NIMTeamNotificationContent*)object.content;
     NSString *currentAccount = [[NIMSDK sharedSDK].loginManager currentAccount];
     if ([content.sourceID isEqualToString:currentAccount]) {
@@ -583,7 +582,7 @@
 
 + (NSArray *)teamNotificationTargetNames:(NIMMessage *)message{
     NSMutableArray *targets = [[NSMutableArray alloc] init];
-    NIMNotificationObject *object = message.messageObject;
+    NIMNotificationObject *object = (NIMNotificationObject *)message.messageObject;
     NIMTeamNotificationContent *content = (NIMTeamNotificationContent*)object.content;
     NSString *currentAccount = [[NIMSDK sharedSDK].loginManager currentAccount];
     for (NSString *item in content.targetIDs) {
@@ -606,7 +605,7 @@
 
 + (NSString *)superTeamNotificationSourceName:(NIMMessage *)message{
     NSString *source;
-    NIMNotificationObject *object = message.messageObject;
+    NIMNotificationObject *object = (NIMNotificationObject *)message.messageObject;
     NIMSuperTeamNotificationContent *content = (NIMSuperTeamNotificationContent*)object.content;
     NSString *currentAccount = [[NIMSDK sharedSDK].loginManager currentAccount];
     if ([content.sourceID isEqualToString:currentAccount]) {
@@ -619,7 +618,7 @@
 
 + (NSArray *)superTeamNotificationTargetNames:(NIMMessage *)message{
     NSMutableArray *targets = [[NSMutableArray alloc] init];
-    NIMNotificationObject *object = message.messageObject;
+    NIMNotificationObject *object = (NIMNotificationObject *)message.messageObject;
     NIMSuperTeamNotificationContent *content = (NIMSuperTeamNotificationContent*)object.content;
     NSString *currentAccount = [[NIMSDK sharedSDK].loginManager currentAccount];
     for (NSString *item in content.targetIDs) {

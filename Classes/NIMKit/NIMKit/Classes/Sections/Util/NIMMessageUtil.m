@@ -10,7 +10,6 @@
 #import <NIMSDK/NIMSDK.h>
 #import "TWNewMessageAttachMent.h"
 
-
 @implementation NIMMessageUtil
 
 + (NSString *)messageContent:(NIMMessage*)message {
@@ -41,14 +40,13 @@
             text = message.text;
             break;
         case NIMMessageTypeCustom:{
-                NIMCustomObject *object = message.messageObject;
-                TWNewMessageAttachMent *attachment = object.attachment;
-                text = attachment.messageDic[@"estateAreaName"];
+            NIMCustomObject *object = (NIMCustomObject *)message.messageObject;
+            TWNewMessageAttachMent *attachment = (TWNewMessageAttachMent *)object.attachment;
+            text = attachment.messageDic[@"estateAreaName"];
 
-            //            TWNewMessageAttachMent =objc
-                    }
+        }
 
-                    break;
+        break;
         default:
             text = @"[未知消息]";
     }
@@ -56,7 +54,7 @@
 }
 
 + (NSString *)notificationMessageContent:(NIMMessage *)message{
-    NIMNotificationObject *object = message.messageObject;
+    NIMNotificationObject *object = (NIMNotificationObject*)message.messageObject;
     if (object.notificationType == NIMNotificationTypeNetCall) {
         NIMNetCallNotificationContent *content = (NIMNetCallNotificationContent *)object.content;
         if (content.callType == NIMNetCallTypeAudio) {

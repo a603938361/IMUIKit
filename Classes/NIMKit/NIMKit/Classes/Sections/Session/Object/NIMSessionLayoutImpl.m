@@ -162,7 +162,7 @@
     if (tableChanged)
     {
         [self.tableView setFrame:rect];
-        [self.tableView nim_scrollToBottom:YES];
+        [self.tableView nim_scrollToBottom:NO];
     }
 }
 

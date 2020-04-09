@@ -67,7 +67,7 @@
 
 - (void)refresh:(NIMMessageModel *)data{
     [super refresh:data];
-    NIMAudioObject *object = self.model.message.messageObject;
+    NIMAudioObject *object = (NIMAudioObject *)self.model.message.messageObject;
     self.durationLabel.text = [NSString stringWithFormat:@"%zd\"",(object.duration+500)/1000];//四舍五入
     
     NIMKitSetting *setting = [[NIMKit sharedKit].config setting:data.message];

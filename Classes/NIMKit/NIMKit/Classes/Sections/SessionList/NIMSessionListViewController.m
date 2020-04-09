@@ -17,7 +17,6 @@
 #import "TWTool.h"
 #import "NTESSessionUtil.h"
 
-
 @interface NIMSessionListViewController ()
 
 @end
@@ -79,6 +78,8 @@
     return [[NIMSDK sharedSDK].conversationManager.allRecentSessions mutableCopy];
 }
 
+
+
 - (void)refresh{
     if (!self.recentSessions.count) {
         self.tableView.hidden = YES;
@@ -117,7 +118,9 @@
         cell = [[NIMSessionListCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellId];
         [cell.avatarImageView addTarget:self action:@selector(onTouchAvatar:) forControlEvents:UIControlEventTouchUpInside];
     }
+    
     NIMRecentSession *recent = self.recentSessions[indexPath.row];
+    
     BOOL isTop = [NTESSessionUtil recentSessionIsMark:recent type:NTESRecentSessionMarkTypeTop];
     if (isTop) {
         cell.backgroundColor =kRGB(250, 250, 250);
@@ -125,13 +128,14 @@
         cell.backgroundColor =kRGB(255, 255, 255);
 
     }
-    cell.messageLabel.backgroundColor = [UIColor clearColor];
-       cell.nameLabel.backgroundColor = [UIColor clearColor];
-       cell.timeLabel.backgroundColor = [UIColor clearColor];
     cell.nameLabel.text = [self nameForRecentSession:recent];
+    cell.messageLabel.backgroundColor = [UIColor clearColor];
+    cell.nameLabel.backgroundColor = [UIColor clearColor];
+    cell.timeLabel.backgroundColor = [UIColor clearColor];
     [cell.avatarImageView setAvatarBySession:recent.session];
     [cell.nameLabel sizeToFit];
     cell.messageLabel.attributedText  = [self contentForRecentSession:recent];
+
     [cell.messageLabel sizeToFit];
     cell.timeLabel.text = [self timestampDescriptionForRecentSession:recent];
     [cell.timeLabel sizeToFit];
@@ -233,16 +237,7 @@
 
 - (NSString *)nameForRecentSession:(NIMRecentSession *)recent {
     if (recent.session.sessionType == NIMSessionTypeP2P) {
-         NSString *sessinName =[NIMKitUtil showNick:recent.session.sessionId inSession:recent.session];
-              BOOL isPhone =[TWTool isMobileNumber:sessinName];
-                         if (isPhone) {
-                             return [sessinName stringByReplacingOccurrencesOfString:[sessinName  substringWithRange:NSMakeRange(3,4)]withString:@"****"];
-
-                 
-                         }else{
-                             return sessinName;
-                         }
-              return [NIMKitUtil showNick:recent.session.sessionId inSession:recent.session];
+        return [NIMKitUtil showNick:recent.session.sessionId inSession:recent.session];
     } else if (recent.session.sessionType == NIMSessionTypeTeam) {
         NIMTeam *team = [[NIMSDK sharedSDK].teamManager teamById:recent.session.sessionId];
         return team.teamName;

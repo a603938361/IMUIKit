@@ -132,6 +132,7 @@
         NIMKitInfoFetchOption *option = [[NIMKitInfoFetchOption alloc] init];
         option.session = session;
         info = [[NIMKit sharedKit] infoByUser:session.sessionId option:option];
+        
     }
     [self setImageWithUrlString:info.avatarUrlString placeholderImage:info.avatarImage options:0];
 }
@@ -160,16 +161,16 @@
     if (urlString.length == 0) {
         return;
     }
-    
-    if ([urlString containsString:@"https"]) {
-           NSString *subSring = [urlString substringFromIndex:5];
-           urlString = [NSString stringWithFormat:@"%@%@",@"http",subSring];
-       }
 
+    if ([urlString containsString:@"https"]) {
+        NSString *subSring = [urlString substringFromIndex:5];
+        urlString = [NSString stringWithFormat:@"%@%@",@"http",subSring];
+    }
     //查询
     __block NSURL *targetUrl = nil;
     __weak typeof(self) weakSelf = self;
     [[NIMKitUrlManager shareManager] queryQriginalUrlWithShortUrl:urlString completion:^(NSString *originalUrl, NSError *error) {
+       
         if (urlString && !error) {
             targetUrl = [NSURL URLWithString:originalUrl];
         } else {

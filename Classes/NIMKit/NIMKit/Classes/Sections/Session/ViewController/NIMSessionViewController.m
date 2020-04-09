@@ -74,6 +74,7 @@
 - (void)setupNav
 {
     [self setUpTitleView];
+
     NIMCustomLeftBarView *leftBarView = [[NIMCustomLeftBarView alloc] init];
     UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithCustomView:leftBarView];
     if (@available(iOS 11.0, *)) {
@@ -81,7 +82,9 @@
     }
     self.navigationItem.leftBarButtonItems = @[leftItem];
     self.navigationItem.leftItemsSupplementBackButton = YES;
-    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+    
+   
+    
 }
 
 - (void)setupTableView
@@ -439,7 +442,6 @@
     }
 
     NIMMessage *message = [NIMMessageMaker msgWithText:text];
-    
     if (atUsers.count)
     {
         NIMMessageApnsMemberOption *apnsOption = [[NIMMessageApnsMemberOption alloc] init];
