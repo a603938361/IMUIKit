@@ -20,6 +20,7 @@
 #import "NIMSessionUnknowContentView.h"
 #import "NIMKitConfig.h"
 #import "NIMKit.h"
+#import "TWIMUtil.h"
 
 @interface NIMMessageCell()<NIMPlayAudioUIDelegate,NIMMessageContentViewDelegate>
 {
@@ -40,7 +41,7 @@
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     if (self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier]) {
-        self.selectionStyle = UITableViewCellSelectionStyleNone;        
+        self.selectionStyle = UITableViewCellSelectionStyleNone;
         [self makeComponents];
         [self makeGesture];
     }
@@ -157,7 +158,7 @@
     {
         [_headImageView setAvatarByMessage:self.model.message];
     }
-
+    
     if([self needShowNickName])
     {
         NSString *nick = [NIMKitUtil showNick:self.model.message.from inMessage:self.model.message];
@@ -195,16 +196,18 @@
     {
         if (self.model.message.session.sessionType == NIMSessionTypeP2P)
         {
-                    //赋值
-                          if (self.model.message.isRemoteRead) {
-                              [_readButton setTitle:@"已读" forState:UIControlStateNormal];
-                            [_readButton setTitleColor:[UIColor colorWithRed:156/255.0f green:156/255.0f blue:156/255.0f alpha:1] forState:UIControlStateNormal];
-                          }else{
-                              [_readButton setTitle:@"未读" forState:UIControlStateNormal];
-                                            [_readButton sizeToFit];
-                              [_readButton setTitleColor:[UIColor colorWithRed:40/255.0f green:137/255.0f blue:255/255.0f alpha:1] forState:UIControlStateNormal];
-                          }
-                        [_readButton sizeToFit];
+            if ([TWIMUtil showMsgStatus]) {
+                //赋值
+                if (self.model.message.isRemoteRead) {
+                    [_readButton setTitle:@"已读" forState:UIControlStateNormal];
+                    [_readButton setTitleColor:[UIColor colorWithRed:156/255.0f green:156/255.0f blue:156/255.0f alpha:1] forState:UIControlStateNormal];
+                }else{
+                    [_readButton setTitle:@"未读" forState:UIControlStateNormal];
+                    [_readButton sizeToFit];
+                    [_readButton setTitleColor:[UIColor colorWithRed:40/255.0f green:137/255.0f blue:255/255.0f alpha:1] forState:UIControlStateNormal];
+                }
+                [_readButton sizeToFit];
+            }
         }
         else if(self.model.message.session.sessionType == NIMSessionTypeTeam)
         {
@@ -241,7 +244,7 @@
     }
     id<NIMCellLayoutConfig> layoutConfig = [[NIMKit sharedKit] layoutConfig];
     self.customViews = [layoutConfig customViews:self.model];
-
+    
     for (UIView *view in self.customViews) {
         [self.contentView addSubview:view];
     }
@@ -383,7 +386,7 @@
         
         _readButton.nim_left = left - CGRectGetWidth(_readButton.bounds) - [self readButtonBubblePadding];
         _readButton.nim_bottom = bottom;
-
+        
     }
 }
 
@@ -408,7 +411,7 @@
         gestureRecognizer.state == UIGestureRecognizerStateBegan) {
         if (self.delegate && [self.delegate respondsToSelector:@selector(onLongPressCell:inView:)]) {
             [self.delegate onLongPressCell:self.model.message
-                                       inView:_bubbleView];
+                                    inView:_bubbleView];
         }
     }
 }
@@ -476,7 +479,7 @@
     {
         disable = [layoutConfig disableRetryButton:self.model];
     }
-    return disable;    
+    return disable;
 }
 
 - (CGFloat)retryButtonBubblePadding {
@@ -501,7 +504,7 @@
 
 
 - (BOOL)unreadHidden {
-    if (self.model.message.messageType == NIMMessageTypeAudio) 
+    if (self.model.message.messageType == NIMMessageTypeAudio)
     { //音频
         BOOL disable = NO;
         if ([self.delegate respondsToSelector:@selector(disableAudioPlayedStatusIcon:)]) {
@@ -509,7 +512,7 @@
         }
         
         //BOOL hideIcon = self.model.message.attachmentDownloadState != NIMMessageAttachmentDownloadStateDownloaded || disable;
-
+        
         return (disable || self.model.message.isOutgoingMsg || [self.model.message isPlayed]);
     }
     return YES;
@@ -517,23 +520,23 @@
 
 - (BOOL)readLabelHidden
 {
-//    if (self.model.shouldShowReadLabel &&
-//        [self activityIndicatorHidden] &&
-//        [self retryButtonHidden] &&
-//        [self unreadHidden])
-//    {
-//        return NO;
-//    }
-//    return YES;
+    //    if (self.model.shouldShowReadLabel &&
+    //        [self activityIndicatorHidden] &&
+    //        [self retryButtonHidden] &&
+    //        [self unreadHidden])
+    //    {
+    //        return NO;
+    //    }
+    //    return YES;
     //是否展示已读未读功能，isRemoteRead已读消息，isOutgoingMsg发出去消息
-          if (self.model.message.isOutgoingMsg &&
-                [self activityIndicatorHidden] &&
-                [self retryButtonHidden] &&
-                [self unreadHidden])
-            {
-                return NO;
-            }
-            return YES;
+    if (self.model.message.isOutgoingMsg &&
+        [self activityIndicatorHidden] &&
+        [self retryButtonHidden] &&
+        [self unreadHidden])
+    {
+        return NO;
+    }
+    return YES;
 }
 
 
