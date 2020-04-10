@@ -22,7 +22,7 @@
 #import "NTESBundleSetting.h"
 #import "TWLookMoreMessagesController.h"
 #import "TWLookMoreSomeOneMessageController.h"
-
+#import "TWSearchImNoData.h"
 
 
 @interface TWIMSearchViewController ()<UITableViewDelegate,UITableViewDataSource>
@@ -35,18 +35,11 @@
 @property (nonatomic, strong) NSMutableDictionary <NSString *, NIMUser *> *userResultDictionary;
 @property (nonatomic, strong) NSMutableDictionary <NSString *, NIMTeam *> *teamResultDictionary;
 @property(nonatomic,strong)NSMutableDictionary<NIMSession *,NSArray<NIMMessage *> *> *messagesDict;
-
+@property (nonatomic, strong) TWSearchImNoData *noDataView;
 @end
 
 @implementation TWIMSearchViewController
 #pragma mark --Lazy Methods
-//-(TWSearchImDescribeView *)describeView{
-//    if (nil == _describeView) {
-//           NSArray *nibs = [[NSBundle mainBundle]loadNibNamed:@"TWSearchImDescribeView" owner:self options:nil];
-//           _describeView = [nibs lastObject];
-//       }
-//       return _describeView;
-//}
 #pragma mark --Privities Methods
 - (void)cancel{
     [self.navigationController popViewControllerAnimated:YES];
@@ -56,56 +49,68 @@
     //查询逻辑
     UITextRange * selectedRange = field.markedTextRange;
     NSString *text = [field.text stringByReplacingOccurrencesOfString:@" " withString:@""];
-     if(selectedRange == nil || selectedRange.empty){
-         if (text.length > 0) {
-             self.tabView.hidden = NO;
-             self.describeView.hidden = YES;
-             //先进行昵称查找
-             __weak typeof(self) weakSelf = self;
-//             [SVProgressHUD show];
-             [self searchSessionIdWithText:text completion:^(NSError *error, NSMutableArray<NSMutableArray *> *sessionIds) {
-                 if (error) {
-                     [SVProgressHUD dismiss];
-                     [weakSelf.view makeToast:@"搜索失败" duration:2 position:CSToastPositionCenter];
-                 } else {
-                     //反查recentsession
-                     dispatch_async(dispatch_get_global_queue(0, 0), ^{
-                         NSMutableArray *resultSessions = [NSMutableArray array];
-                         __block NIMRecentSession *recentSession = nil;
-                         
-                          [sessionIds enumerateObjectsUsingBlock:^(NSMutableArray * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                              if (idx == 0) { //user
-                                  for (NSString *userId in obj) {
-                                      recentSession = [self recentSessionWithId:userId type:NIMSessionTypeP2P];
-                                      if (recentSession) {
-                                          [resultSessions addObject:recentSession];
-                                      }
-                                  }
-                              } else if (idx == 1) { //team
-                                  for (NSString *teamId in obj) {
-                                      recentSession = [self recentSessionWithId:teamId type:NIMSessionTypeTeam];
-                                      if (recentSession) {
-                                          [resultSessions addObject:recentSession];
-                                      }
-                                  }
-                              }
-                          }];
-                         dispatch_async(dispatch_get_main_queue(), ^{
-                             [SVProgressHUD dismiss];
-                             weakSelf.clientDataArr = resultSessions;
-                             [weakSelf searchChatWithText:text];
-                         });
-                     });
-                 }
-             }];
-
-             
-         }else{
-             self.tabView.hidden = YES;
-             self.describeView.hidden = NO;
-             //这里清空数据
-         }
-     }
+    if(selectedRange == nil || selectedRange.empty){
+        if (text.length > 0) {
+            self.tabView.hidden = NO;
+            self.describeView.hidden = YES;
+            //先进行昵称查找
+            __weak typeof(self) weakSelf = self;
+            //             [SVProgressHUD show];
+            [self searchSessionIdWithText:text completion:^(NSError *error, NSMutableArray<NSMutableArray *> *sessionIds) {
+                if (error) {
+                    [SVProgressHUD dismiss];
+                    [weakSelf.view makeToast:@"搜索失败" duration:2 position:CSToastPositionCenter];
+                } else {
+                    //反查recentsession
+                    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                        NSMutableArray *resultSessions = [NSMutableArray array];
+                        __block NIMRecentSession *recentSession = nil;
+                        
+                        [sessionIds enumerateObjectsUsingBlock:^(NSMutableArray * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                            if (idx == 0) { //user
+                                for (NSString *userId in obj) {
+                                    recentSession = [self recentSessionWithId:userId type:NIMSessionTypeP2P];
+                                    if (recentSession) {
+                                        [resultSessions addObject:recentSession];
+                                    }
+                                }
+                            } else if (idx == 1) { //team
+                                for (NSString *teamId in obj) {
+                                    recentSession = [self recentSessionWithId:teamId type:NIMSessionTypeTeam];
+                                    if (recentSession) {
+                                        [resultSessions addObject:recentSession];
+                                    }
+                                }
+                            }
+                        }];
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [SVProgressHUD dismiss];
+                            
+                            if (resultSessions.count == 0) {
+                                [self.view addSubview:self.noDataView];
+                                self.noDataView.hidden = NO;
+                                _noDataView.searchLabel.text = text;
+                            }else{
+                                if (!self.noDataView.hidden) {
+                                    self.noDataView.hidden = YES;
+                                }
+                                weakSelf.clientDataArr = resultSessions;
+                                [weakSelf searchChatWithText:text];
+                            }
+                            
+                        });
+                    });
+                }
+            }];
+            
+            
+        }else{
+            self.tabView.hidden = YES;
+            self.describeView.hidden = NO;
+            self.noDataView.hidden = YES;
+            //这里清空数据
+        }
+    }
 }
 - (NIMRecentSession *)recentSessionWithId:(NSString *)sessionId type:(NIMSessionType)type{
     __block NIMRecentSession *ret = nil;
@@ -176,7 +181,7 @@
         array = messages.allKeys;
         weakSelf.chatDataArr = array;
         [weakSelf.tabView reloadData];
-
+        
     }];
 }
 
@@ -190,13 +195,13 @@
         [self.navigationController pushViewController:contactVc animated:YES];
     }
     
-     if([btn.titleLabel.text containsString:@"聊天记录"]){
-           TWLookMoreMessagesController *messageVc = [[TWLookMoreMessagesController alloc]init];
-           messageVc.chatDataArr = self.chatDataArr;
-           messageVc.messagesDict = self.messagesDict;
-           messageVc.searchStr = self.searchField.text;
-           [self.navigationController pushViewController:messageVc animated:YES];
-       }
+    if([btn.titleLabel.text containsString:@"聊天记录"]){
+        TWLookMoreMessagesController *messageVc = [[TWLookMoreMessagesController alloc]init];
+        messageVc.chatDataArr = self.chatDataArr;
+        messageVc.messagesDict = self.messagesDict;
+        messageVc.searchStr = self.searchField.text;
+        [self.navigationController pushViewController:messageVc animated:YES];
+    }
 }
 
 //-(void)keyboardWillHide:(NSNotification *)note
@@ -237,7 +242,7 @@
     _teamResultDictionary = [NSMutableDictionary dictionary];
     _messagesDict = [NSMutableDictionary dictionary];
     [self initUI];
-//    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+    //    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     // Do any additional setup after loading the view.
 }
 
@@ -246,7 +251,7 @@
     kViewRadius(_searchField, 2);
     _searchField.backgroundColor = kRGB(246, 246, 246);
     [_searchField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
-   
+    
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_searchField];
     
     self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithTitle:@"取消" font:kFont(14) color:kRGB(37, 126, 223) image:nil target:self action:@selector(cancel)];
@@ -261,10 +266,10 @@
     NSArray *nibs = [[NSBundle mainBundle]loadNibNamed:@"TWSearchImDescribeView" owner:self options:nil];
     _describeView = [nibs lastObject];
     _describeView.frame = CGRectMake(0, 0, kScreen_width, kScreen_height-kTopBarHeight);
-//    _describeView.backgroundColor = [UIColor redColor];
+    //    _describeView.backgroundColor = [UIColor redColor];
     [self.view addSubview:_describeView];
     
-//     [_searchField becomeFirstResponder];
+    //     [_searchField becomeFirstResponder];
 }
 
 -(void)viewDidLayoutSubviews{
@@ -318,8 +323,8 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     if (section == 0) {
-         if (self.clientDataArr.count > 3 ||(self.clientDataArr.count==0 && self.chatDataArr.count>3)) {
-               return 54.0f;
+        if (self.clientDataArr.count > 3 ||(self.clientDataArr.count==0 && self.chatDataArr.count>3)) {
+            return 54.0f;
         }else{
             return 0;
         }
@@ -329,9 +334,7 @@
         }else{
             return 0;
         }
-
     }
-   
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -359,7 +362,7 @@
             NSArray *nibs = [[NSBundle mainBundle]loadNibNamed:@"TWSearchImMessageCell" owner:self options:nil];
             TWSearchImMessageCell *messageCell = [nibs lastObject];
             NIMSession *session = self.chatDataArr[indexPath.row];
-              [messageCell dataForCell:session searchDic:_messagesDict searchStr:_searchField.text];
+            [messageCell dataForCell:session searchDic:_messagesDict searchStr:_searchField.text];
             return messageCell;
         }else{
             return nil;
@@ -369,7 +372,7 @@
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     if(section == 0){
-          NSArray *nibs =[[NSBundle mainBundle]loadNibNamed:@"TWSearchImHeadView" owner:self options:nil];
+        NSArray *nibs =[[NSBundle mainBundle]loadNibNamed:@"TWSearchImHeadView" owner:self options:nil];
         TWSearchImHeadView *headView =[nibs lastObject];
         if (self.clientDataArr.count>0 ) {
             headView.leftNameLabel.text = @"联系人";
@@ -408,10 +411,10 @@
         }
     }else{
         if (self.chatDataArr.count > 3) {
-           NSArray *nibs =[[NSBundle mainBundle]loadNibNamed:@"TWSearchImFootView" owner:self options:nil];
+            NSArray *nibs =[[NSBundle mainBundle]loadNibNamed:@"TWSearchImFootView" owner:self options:nil];
             TWSearchImFootView *footView =[nibs lastObject];
             [footView.lookMoreBtn setTitle:@"查看更多聊天记录" forState:UIControlStateNormal];
-             [footView.lookMoreBtn addTarget:self action:@selector(lookMoreBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+            [footView.lookMoreBtn addTarget:self action:@selector(lookMoreBtnClick:) forControlEvents:UIControlEventTouchUpInside];
             return footView;
         }else{
             return nil;
@@ -443,36 +446,39 @@
                     [self.navigationController pushViewController:sessionVc animated:YES];
                     
                 }
-
+                
             }
         }
     }else{
         if (self.chatDataArr.count>0) {
-                      NIMSession *session = self.chatDataArr[indexPath.row];
-                      NSArray *messageArr = _messagesDict[session];
-                      if (messageArr.count > 1) {
-                          //跳转到个人更多页面
-                          TWLookMoreSomeOneMessageController *someoneMessageVc = [[TWLookMoreSomeOneMessageController alloc]init];
-                          someoneMessageVc.searchStr = _searchField.text;
-                          someoneMessageVc.chatDataArr = (NSMutableArray *)messageArr;
-                          someoneMessageVc.session = session;
-                          [self.navigationController pushViewController:someoneMessageVc animated:YES];
-                      }else{
-                          //跳转到个人页面
-                          TWSessionViewController *sessionVc = [[TWSessionViewController alloc]initWithSession:session];
-                             sessionVc.firstMessage = messageArr[0];
-                             [self.navigationController pushViewController:sessionVc animated:YES];
-                      }
-
-                  }
+            NIMSession *session = self.chatDataArr[indexPath.row];
+            NSArray *messageArr = _messagesDict[session];
+            if (messageArr.count > 1) {
+                //跳转到个人更多页面
+                TWLookMoreSomeOneMessageController *someoneMessageVc = [[TWLookMoreSomeOneMessageController alloc]init];
+                someoneMessageVc.searchStr = _searchField.text;
+                someoneMessageVc.chatDataArr = (NSMutableArray *)messageArr;
+                someoneMessageVc.session = session;
+                [self.navigationController pushViewController:someoneMessageVc animated:YES];
+            }else{
+                //跳转到个人页面
+                TWSessionViewController *sessionVc = [[TWSessionViewController alloc]initWithSession:session];
+                sessionVc.firstMessage = messageArr[0];
+                [self.navigationController pushViewController:sessionVc animated:YES];
+            }
+            
+        }
     }
 }
-#pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (TWSearchImNoData *)noDataView
+{
+    if (!_noDataView) {
+        _noDataView = [[TWSearchImNoData alloc] init];
+        _noDataView.frame = CGRectMake(0, 0, kScreen_width, kScreen_height);
+    }
+    return _noDataView;
 }
+
 
 @end
