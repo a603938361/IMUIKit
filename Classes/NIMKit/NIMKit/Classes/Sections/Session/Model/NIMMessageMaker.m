@@ -17,7 +17,8 @@
 
 + (NSString *)sessionID
 {
-    return [[NSUserDefaults standardUserDefaults] objectForKey:kSessionID];
+    NSString *sId = [[NSUserDefaults standardUserDefaults] objectForKey:kSessionID];
+    return sId ? sId : @"";
 }
 
 + (NIMMessage*)msgWithText:(NSString*)text
