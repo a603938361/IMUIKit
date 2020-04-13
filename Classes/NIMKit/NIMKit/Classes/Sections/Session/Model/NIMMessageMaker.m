@@ -12,12 +12,12 @@
 #import "NIMKit.h"
 #import "NIMInputAtCache.h"
 #import "NTESSessionUtil.h"
-
+#import "TWIMUtil.h"
 @implementation NIMMessageMaker
 
 + (NSString *)sessionID
 {
-    NSString *sId = [[NSUserDefaults standardUserDefaults] objectForKey:kSessionID];
+    NSString *sId = [TWIMUtil getAccount];
     return sId ? sId : @"";
 }
 

@@ -12,7 +12,7 @@
 #import "UIImage+NIMKit.h"
 #import "NIMInputBarItemType.h"
 #import "UIButton+Extension.h"
-
+#import "TWIMUtil.h"
 
 @interface NIMInputToolBar()<NIMGrowingTextViewDelegate>
 
@@ -80,12 +80,13 @@
         sep.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         [self addSubview:sep];
         
-        //自定义的View
-        self.tWCustomView = [[UIView alloc]initWithFrame:CGRectZero];
-//        self.tWCustomView.backgroundColor = [UIColor redColor];
-        self.tWCustomView.nim_size = CGSizeMake(self.nim_width, 37);
-        self.autoresizingMask =UIViewAutoresizingFlexibleWidth;
-        [self addSubview:self.tWCustomView];
+        if ([TWIMUtil showFastMsg]) {
+            self.tWCustomView = [[UIView alloc]initWithFrame:CGRectZero];
+            //        self.tWCustomView.backgroundColor = [UIColor redColor];
+            self.tWCustomView.nim_size = CGSizeMake(self.nim_width, 37);
+            self.autoresizingMask =UIViewAutoresizingFlexibleWidth;
+            [self addSubview:self.tWCustomView];
+        }
         
         _twImageView = [[UIImageView alloc]init];
         _twImageView.nim_size = CGSizeMake(18, 18);
@@ -115,11 +116,11 @@
         [self addSubview:_bottomSep];
         
         self.types = @[
-                         @(NIMInputBarItemTypeVoice),
-                         @(NIMInputBarItemTypeTextAndRecord),
-                         @(NIMInputBarItemTypeEmoticon),
-                         @(NIMInputBarItemTypeMore),
-                       ];
+            @(NIMInputBarItemTypeVoice),
+            @(NIMInputBarItemTypeTextAndRecord),
+            @(NIMInputBarItemTypeEmoticon),
+            @(NIMInputBarItemTypeMore),
+        ];
     }
     return self;
 }
@@ -358,11 +359,11 @@
 - (UIView *)subViewForType:(NIMInputBarItemType)type{
     if (!_dict) {
         _dict = @{
-                  @(NIMInputBarItemTypeVoice) : self.voiceButton,
-                  @(NIMInputBarItemTypeTextAndRecord)  : self.inputTextBkgImage,
-                  @(NIMInputBarItemTypeEmoticon) : self.emoticonBtn,
-                  @(NIMInputBarItemTypeMore)     : self.moreMediaBtn
-                };
+            @(NIMInputBarItemTypeVoice) : self.voiceButton,
+            @(NIMInputBarItemTypeTextAndRecord)  : self.inputTextBkgImage,
+            @(NIMInputBarItemTypeEmoticon) : self.emoticonBtn,
+            @(NIMInputBarItemTypeMore)     : self.moreMediaBtn
+        };
     }
     return _dict[@(type)];
 }
